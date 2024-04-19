@@ -1,16 +1,59 @@
-from typing import List
+from bson import ObjectId
+from typing import Optional
 from mongodb import database
-from user.model import User
+from pydantic import BaseModel
+from datetime import datetime, UTC
+from user.model import User, CreatingOrReplacingUser, UpdatingUser
 from fastapi import APIRouter
 router = APIRouter(prefix='/users')
 collection = database['user']
 
-@router.get('')
-async def get_users():
-    cursor = await collection.find_one({'_id': '66210b8204b9ae6ef45add16'})
-    print(cursor)
-    return cursor
+def to_dict(model: BaseModel, is_new: bool = False) -> dict:
+    data = dict(model)
+    data['updated_at'] = datetime.now(UTC)
+    if is_new:
+        data['created_at'] = datetime.now(UTC)
+    return data
 
-# @router.post('')
-# def create_user(user: User) -> User:
-#     return User(name='123', age=12)
+async def find_user(id: str) -> Optional[User]:
+    document = await collection.find_one({'_id': ObjectId(id)})
+    return User.parse(document) if document else None
+async def find_existing_user(id: str) -> User:
+    user = await find_user(id)
+    if user is None:
+        raise Exception(f'existing user not found | id: {id}')
+    return user
+
+@router.get('')
+async def get_user(id: str) -> Optional[User]:
+    return await find_user(id)
+
+@router.post('')
+async def create_user(user: CreatingOrReplacingUser) -> User:
+    result = await collection.insert_one(to_dict(user, is_new=True))
+    return await find_existing_user(result.inserted_id)
+
+@router.patch('')
+async def update_user(id: str, user: UpdatingUser) -> Optional[User]:
+    if await find_user(id):
+        await collection.update_one(
+            {"_id": ObjectId(id)},
+            {"$set": to_dict(user)}
+        )
+        return await find_existing_user(id)
+    
+@router.put('')
+async def replace_user(id: str, user: CreatingOrReplacingUser) -> Optional[User]:
+    if await find_user(id):
+        await collection.update_one(
+            {"_id": ObjectId(id)},
+            {"$set": to_dict(user)}
+        )
+        return await find_existing_user(id)
+
+@router.delete('')
+async def delete_user(id: str) -> Optional[User]:
+    user = await find_user(id)
+    if user:
+        await collection.delete_one({"_id": ObjectId(id)})
+        return user
