@@ -3,6 +3,12 @@
 /.pytest_cache/
 .python-version
 .coverage
+.coveragerc
+pytest.ini
 
 /mongodb/
 /.vscode/
+.gitignore
+docker-compose.yml
+Dockerfile
+README.md

@@ -1,8 +1,10 @@
+import os
 import sys
 import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
+from dotenv import load_dotenv
+load_dotenv()
 
-MONGO_URL = 'mongodb://root:pass@localhost:27017'
-client = AsyncIOMotorClient(MONGO_URL)
+client = AsyncIOMotorClient(os.environ.get('MONGO_URL'))
 client.get_io_loop = asyncio.get_running_loop
 database = client['restful-api'] if 'pytest' not in sys.modules else client['test']

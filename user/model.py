@@ -6,8 +6,8 @@ class CreatingOrReplacingUser(BaseModel):
     age: int
 
 class UpdatingUser(BaseModel):
-    name: Optional[str]
-    age: Optional[str]
+    name: Optional[str] = None
+    age: Optional[int] = None
 
 class User(BaseModel):
     id: str
@@ -21,7 +21,7 @@ class User(BaseModel):
         return User(
             id=str(document['_id']),
             name=document['name'],
-            age=document['age'],
+            age=document['age'] if 'age' in document else 0,
             created_at=str(document['created_at']),
             updated_at=str(document['updated_at']),
         )

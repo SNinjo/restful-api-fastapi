@@ -8,6 +8,7 @@ services:
         volumes:
             - ./mongodb:/data/db
         networks:
+            - api
             - mongo
         environment:
             MONGO_INITDB_ROOT_USERNAME: root
@@ -27,5 +28,17 @@ services:
             ME_CONFIG_MONGODB_ADMINPASSWORD: pass
             ME_CONFIG_BASICAUTH_USERNAME: root
             ME_CONFIG_BASICAUTH_PASSWORD: pass
+    restful-api-fastapi:
+        image: restful-api-fastapi
+        container_name: restful-api-fastapi
+        depends_on:
+            - mongo
+        ports:
+            - 8000:8000
+        networks:
+            - api
+        environment:
+            MONGO_URL: mongodb://root:pass@mongo:27017
 networks:
+    api:
     mongo:

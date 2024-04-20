@@ -8,11 +8,13 @@ from fastapi import APIRouter
 router = APIRouter(prefix='/users')
 collection = database['user']
 
-def to_dict(model: BaseModel, is_new: bool = False) -> dict:
+def to_dict(model: BaseModel, is_new: bool = False, is_none_filtered: bool = True) -> dict:
     data = dict(model)
     data['updated_at'] = datetime.now(UTC)
     if is_new:
         data['created_at'] = datetime.now(UTC)
+    if is_none_filtered:
+        data = {key: value for key, value in data.items() if data[key]}
     return data
 
 async def find_user(id: str) -> Optional[User]:
@@ -38,7 +40,7 @@ async def update_user(id: str, user: UpdatingUser) -> Optional[User]:
     if await find_user(id):
         await collection.update_one(
             {"_id": ObjectId(id)},
-            {"$set": to_dict(user)}
+            {"$set": to_dict(user, is_none_filtered=True)}
         )
         return await find_existing_user(id)
     

@@ -1,9 +1,34 @@
-# restful-api-fastapi
+# restful-api-fastapi &middot; ![Coverage](https://img.shields.io/badge/Coverage-100%-brightgreen)
+
+A RESTful API server includes
+
+* Framework: FastAPI
+* OpenAPI: Swagger
+* Database: MongoDB
+* MongoDB Driver: Motor
+* Test: Pytest
+* Environment: Docker
+* Deployment: Docker Compose
 
 ## Usage
 
-### Start
+### Develop
 
 ```shell
-uvicorn main:app
+uvicorn main:app --reload
 ```
+
+### Test
+
+```shell
+pytest --cov=./ --cov-report term-missing
+```
+
+### Build
+
+```shell
+docker build . -t restful-api-fastapi
+docker-compose up -d
+```
+
+[Swagger](http://localhost:8000/docs)
