@@ -1,4 +1,4 @@
-# restful-api-fastapi &middot; ![Coverage](https://img.shields.io/badge/Coverage-100%-brightgreen)
+# restful-api-fastapi &middot; ![Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen)
 
 A RESTful API server includes
 
