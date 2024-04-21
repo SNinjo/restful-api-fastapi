@@ -38,7 +38,7 @@ services:
         networks:
             - api
         environment:
-            MONGO_URL: mongodb://root:pass@mongo:27017
+            MONGO_URI: mongodb://root:pass@mongo:27017
 networks:
     api:
     mongo:
