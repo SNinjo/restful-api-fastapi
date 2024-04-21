@@ -12,11 +12,24 @@ A RESTful API server includes
 
 ## Usage
 
+### Build Database
+
+```shell
+docker-compose up -d mongo mongo-express
+```
+
+[Mongo Express](http://localhost:8081)
+
+* username: root
+* password: pass
+
 ### Develop
 
 ```shell
 uvicorn main:app --reload
 ```
+
+[Swagger](http://localhost:8000/docs)
 
 ### Test
 
@@ -24,11 +37,9 @@ uvicorn main:app --reload
 pytest --cov=./ --cov-report term-missing
 ```
 
-### Build
+### Deploy
 
 ```shell
 docker build . -t restful-api-fastapi
 docker-compose up -d
 ```
-
-[Swagger](http://localhost:8000/docs)
